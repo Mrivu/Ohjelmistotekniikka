@@ -1,0 +1,16 @@
+# Viikko 1
+Komentorivi ja versionhallinta ovat jo tuttuja.
+
+kurssit
+└── ot2025
+    └── viikko1
+        └── unicafe
+            ├── poetry.lock
+            ├── pyproject.toml
+            └── src
+                ├── index.py
+                ├── kassapaate.py
+                ├── maksukortti.py
+                └── tests
+                    ├── __init__.py
+                    └── maksukortti_test.py
