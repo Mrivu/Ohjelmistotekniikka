@@ -22,31 +22,73 @@ class Level:
             return None
         num = random.randint(0,len(lists.boss_effects)-1)
         return lists.boss_effects[num][num+1]
+
+    def roll(self):
+        results = []
+        for d in self.dice:
+            results.append(d.roll_dice())
+        return
+    
+    def reroll(self, list):
+        pass
+
     
 class Dice:
     def __init__(self, sides=6):
         self.sides = sides
+        self.result = None
     
     def roll_dice(self):
-        return random.randint(1, self.sides)
+        self.result = random.randint(1, self.sides)
+    
+    def get_result(self):
+        return self.result
 
-def main():
-    display_height = 300
-    display_width = 300
+class Button:
+    def  __init__(self, pos, img, scale):
+        self.pos = pos
+        self.scale = scale
 
-    display = pygame.display.set_mode((display_width, display_height))
+class main():
+    def __init__(self):
+        self.display_height = 800
+        self.display_width = 1200
 
-    pygame.display.set_caption("Game")
+        self.dice = [Dice(), Dice(), Dice(), Dice(), Dice()]
 
-    pygame.init()
+        self.display = pygame.display.set_mode((self.display_width, self.display_height))
 
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        pygame.display.set_caption("Game")
+
+        pygame.init()   
+        self.display.fill("#470278")
+        self.game_loop()
+
+    def game_loop(self):
         pygame.display.update()
-    pygame.quit()
+        running = True
+        self.update_dice()
+        while running:
+            for i, die in enumerate(self.dice):
+                self.write_text(str(die.get_result()), ((i-math.floor(len(self.dice)/2))*50, -self.display_height/5), 30)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            pygame.display.update()
+        pygame.quit()
+
+    def write_text(self, text, pos, fontize, color=(255,255,255)):
+        # Pos is offset from centre
+        font = pygame.font.SysFont("Arial", fontize)
+        text = font.render(text, True, color)
+
+        text_rect = text.get_rect(center=(self.display_width/2 - pos[0], self.display_height/2 - pos[1]))
+        self.display.blit(text, text_rect)
+    
+    def update_dice(self):
+        for die in self.dice:
+            die.result = random.randint(1, die.sides)
 
 if __name__ == "__main__":
     main()
