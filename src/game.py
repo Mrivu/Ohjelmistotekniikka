@@ -19,6 +19,21 @@ class Level:
         difficulty = lists.level_difficulty[self.level-1][self.level]
         return math.ceil(((difficulty+3)**2) + difficulty*3)
     
+    def current_score(self, dice):
+        score = 0
+        for num in range(20):
+            amount = [die.get_result() for die in dice].count(num+1)
+            mul = 1
+            if amount == 3:
+                mul = 1.5
+            if amount == 4:
+                mul = 2
+            if amount == 5:
+                mul = 3
+            score += math.ceil(mul*(num+1)*amount)
+        return score
+
+    
     def boss_effect(self):
         if not self.boss:
             return None
@@ -126,6 +141,12 @@ class main():
             # Buttons
             if self.restart_button.draw(self.display):
                 self.dice = self.level.reroll(self.dice)
+            
+            # Text
+            write_text("LEVEL: " + str(self.level.level), (0,self.display_height/3), 55, self.display)
+            write_text("SCORE TO BEAT: " + str(self.level.clear_score()), (0,self.display_height/4), 40, self.display)
+            write_text("CURRENT: " + str(self.level.current_score(self.dice)), (0,self.display_height/5), 32, self.display)
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
