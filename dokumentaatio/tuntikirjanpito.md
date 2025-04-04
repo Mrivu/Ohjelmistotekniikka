@@ -5,5 +5,7 @@
 | 31.3. | 0.5    | Alustus |
 | 1.4. | 4   | Runko, Testit, Invoke |
 | 3.4. | 1   | Pygame-pelin piirtoa |
+| 4.4. | 1   | Pygame-pelin piirtoa |
+
 
 
