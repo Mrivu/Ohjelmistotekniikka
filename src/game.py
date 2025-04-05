@@ -36,7 +36,19 @@ class Level:
     
     def complete(self, dice):
         # Check win
-        return self.current_score(dice) >= self.clear_score()
+        win = self.current_score(dice) >= self.clear_score()
+        # Coin increases
+        if win:
+            increase = 0
+            # Reroll value
+            increase += globals.max_rerolls - globals.rerolls
+            # Excess
+            extra = math.floor((self.current_score(dice) - self.clear_score()) / (self.clear_score()*0.5))
+            increase += extra
+            # Level comletion
+            increase += 3
+            globals.coins += increase
+        return win
     
     def boss_effect(self):
         if not self.boss:
@@ -44,12 +56,6 @@ class Level:
         num = random.randint(0,len(lists.boss_effects)-1)
         return lists.boss_effects[num][num+1]
 
-    def roll(self):
-        results = []
-        for d in self.dice:
-            results.append(d.roll_dice())
-        return
-    
     def reroll(self, dice):
         no_select = True
         for die in dice:
@@ -117,13 +123,7 @@ class Button:
 
 class main():
     def __init__(self):
-        self.display_width = globals.display_width
-        self.display_height = globals.display_height
-
         self.load_images()
-
-        self.max_rerolls = 2
-        self.rerolls = self.max_rerolls
 
         self.level = Level(1)
 
@@ -133,7 +133,7 @@ class main():
         self.reroll_button = Button((0, -globals.display_height/3.5), self.restart_sprite, 1)
         self.submit_button = Button((0, globals.display_height/6.75), self.submit_sprite, 1)
 
-        self.display = pygame.display.set_mode((self.display_width, self.display_height))
+        self.display = pygame.display.set_mode((globals.display_width, globals.display_height))
 
         pygame.display.set_caption("Game")
 
@@ -160,46 +160,48 @@ class main():
 
                 self.dice = sorted(self.dice, key=lambda die: die.get_result())
                 for i, die in enumerate(self.dice):
-                    die.draw(str(die.get_result()), ((i-math.floor(len(self.dice)/2))*50, -self.display_height/5), self.display)
+                    die.draw(str(die.get_result()), ((i-math.floor(len(self.dice)/2))*50, -globals.display_height/5), self.display)
 
                 # Buttons
-                if self.rerolls > 0:
+                if globals.rerolls > 0:
                     if self.reroll_button.draw(self.display):
-                        self.rerolls -= 1
+                        globals.rerolls -= 1
                         self.dice = self.level.reroll(self.dice)
                 else:
                     self.reroll_button.draw(self.display, disabled=True)
                 
                 if self.submit_button.draw(self.display):
-                    self.rerolls = 0
+                    globals.rerolls = 0
                     win = self.level.complete(self.dice)
                     game = False
                     level_result = True
                 
                 # Text
-                write_text("LEVEL: " + str(self.level.level), (0,self.display_height/3), 55, self.display)
-                write_text("SCORE TO BEAT: " + str(self.level.clear_score()), (0,self.display_height/4), 40, self.display)
-                write_text("CURRENT: " + str(self.level.current_score(self.dice)), (0,self.display_height/5), 32, self.display)
+                write_text("LEVEL: " + str(self.level.level), (0,globals.display_height/3), 55, self.display)
+                write_text("SCORE TO BEAT: " + str(self.level.clear_score()), (0,globals.display_height/4), 40, self.display)
+                write_text("CURRENT: " + str(self.level.current_score(self.dice)), (0,globals.display_height/5), 32, self.display)
+                write_text("COINS: " + str(globals.coins), (-globals.display_width/2 + 80, -globals.display_height/2 + 30), 32, self.display)
                 
                 # Rerolls text
                 self.remaining_spire_rect = self.remaining_sprite.get_rect(center=(globals.display_width/2, globals.display_height/2 + globals.display_height/3))
                 self.display.blit(self.remaining_sprite, self.remaining_spire_rect)
-                write_text(str(self.rerolls), (40,-self.display_height/3), 20, self.display)
+                write_text(str(globals.rerolls), (40,-globals.display_height/3), 20, self.display)
 
             if level_result:
                 if win:
                     self.display.fill("#038731")
-                    write_text("LEVEL " + str(self.level.level) + " COMPLETE!", (0,0), 50, self.display)
+                    write_text("LEVEL " + str(self.level.level) + " COMPLETE!", (0,globals.display_height/2.5), 50, self.display)
                     pygame.display.update()
                     time.sleep(3)
                     self.level = Level(self.level.level+1)
                 else:
                     self.display.fill("#870319")
-                    write_text("LEVEL " + str(self.level.level) + " FAILED!", (0,0), 50, self.display)
+                    write_text("LEVEL " + str(self.level.level) + " FAILED!", (0,globals.display_height/2.5), 50, self.display)
                     pygame.display.update()
                     time.sleep(3)
                     self.level = Level(1)
-                self.rerolls = self.max_rerolls
+                    globals.coins = 0
+                globals.rerolls = globals.max_rerolls
                 self.dice = self.level.reroll(self.dice)
                 level_result = False
                 game = True

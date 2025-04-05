@@ -18,8 +18,16 @@ class TestGame(unittest.TestCase):
         self.assertEqual(self.level.clear_score(), clear_score)
         self.assertNotEqual(self.level.boss_effect(), None)
     
-    def dice_roll(self):
-        results = []
-        for d in self.dice:
-            results.append(d.roll_dice())
-        self.assertEqual(len(results), 6)
+    def test_dice_roll(self):
+        results = self.level.reroll(self.dice)
+        self.assertEqual(len(results), 5)
+    
+    def test_victory(self):
+        for die in self.dice:
+            die.result = 1
+        win = self.level.complete(self.dice)
+        self.assertEqual(win, False)
+        for die in self.dice:
+            die.result = 5
+        win = self.level.complete(self.dice)
+        self.assertEqual(win, True)
