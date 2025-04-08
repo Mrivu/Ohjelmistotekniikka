@@ -1,13 +1,13 @@
 # Arkkitehtuuri
 
 ## Oleelliset luokat
-Button
-Dice
-Level
-Game
+- Button
+- Dice
+- Level
+- Game
 
 ## Rakenne
-Button -> Game
-Dice -> Game
-Level -> Game
-Game
+- Button -> Game
+- Dice -> Game
+- Level -> Game
+- Game
