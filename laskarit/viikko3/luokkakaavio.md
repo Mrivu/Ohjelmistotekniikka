@@ -11,8 +11,8 @@
     Ruutu "1" -- "1" Lähtö
     Ruutu "1" -- "1" Mene Vankilaan
     Ruutu "1" -- "1" Vapaa pysäköinty
-    Ruutu "6" -- "6" Sattuma ja/tai Yhteismaa
-    Ruutu "8" -- "8" Asemat ja/tai laitokset
+    Ruutu "6" -- "6" Sattuma tai Yhteismaa
+    Ruutu "8" -- "8" Asemat tai laitokset
     Ruutu "22" -- "22" Katu
     Ruutu "1" -- "1" Toiminto
     Sattuma ja/tai Yhteismaa "6" -- "1...99" Kortti

@@ -6,3 +6,4 @@ Toiminnallisuudet:
 - Pelissä on eri tasoja, jotka päättyvät jonkinsortin boss-battleen.
 - Pelissä on eri päivityksiä, jotka tukevat eri strategioita/pelityylejä edetä pelissä.
 - Pelissä on erillaisia noppia niin d4 -> d20.
+- Pelissä on kauppa, josta voi ostaa erillaisia päivityksiä peliin
