@@ -9,7 +9,7 @@
 | 5.4. | 1  | Core-gameplay logiikkaa |
 | 8.4. | 3  | Pylint & hiomista |
 | 15.4. | 3  | Reformatoi koodi ja hio pelin runkoa |
-| Yht | 19  |  |
+| Yht | 16 |  |
 
 
 
