@@ -1,6 +1,6 @@
 import math
 import random
-import src.static_items.lists as lists
+from src.static_items import lists
 
 class Level:
     def __init__(self, level: int, boss=False):
@@ -9,7 +9,7 @@ class Level:
 
     def clear_score(self):
         # Return score needed to advance level
-        difficulty = lists.level_difficulty[self.level-1][self.level]
+        difficulty = lists.level_difficulty[self.level]
         return math.ceil(((difficulty+3)**2) + difficulty*3)
 
     def current_score(self, dice):
@@ -45,8 +45,8 @@ class Level:
     def boss_effect(self):
         if not self.boss:
             return None
-        num = random.randint(0,len(lists.boss_effects)-1)
-        return lists.boss_effects[num][num+1]
+        num = random.randint(1,len(lists.boss_effects))
+        return lists.boss_effects[num]
 
     def reroll(self, dice):
         no_select = True
@@ -59,3 +59,7 @@ class Level:
             for die in dice:
                 die.result = random.randint(1, die.sides)
         return sorted(dice, key=lambda die: die.get_result(), reverse=True)
+
+    def un_select_dice(self, dice):
+        for die in dice:
+            die.selected = False

@@ -10,12 +10,12 @@ class TestGame(unittest.TestCase):
         self.rerolls = self.max_rerolls
 
     def test_level_stats(self):
-        difficulty = lists.level_difficulty[self.level.level-1][self.level.level]
+        difficulty = lists.level_difficulty[self.level.level]
         clear_score = game.math.ceil(((difficulty+3)**2) + difficulty*3)
         self.assertEqual(self.level.clear_score(), clear_score)
         self.assertEqual(self.level.boss_effect(), None)
         self.level = game.level.Level(2,True)
-        difficulty = lists.level_difficulty[self.level.level-1][self.level.level]
+        difficulty = lists.level_difficulty[self.level.level]
         clear_score = game.math.ceil(((difficulty+3)**2) + difficulty*3)
         self.assertEqual(self.level.clear_score(), clear_score)
         self.assertNotEqual(self.level.boss_effect(), None)

@@ -1,6 +1,6 @@
 import random
 import pygame
-import src.static_items.global_vars as global_vars
+from src.static_items import global_vars
 
 
 class Dice:

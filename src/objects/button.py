@@ -1,11 +1,13 @@
 import pygame
-import src.static_items.global_vars as global_vars
+from src.static_items import global_vars
 
 class Button:
     def  __init__(self, pos, img, scale):
         self.pos = pos
         self.scale = scale
-        self.image = img
+        width = img.get_width()
+        height = img.get_height()
+        self.image = pygame.transform.scale(img, (int(width * scale), int(height * scale)))
         self.rect = img.get_rect(center=(global_vars.DISPLAY_WIDTH/2 + pos[0],
                                          global_vars.DISPLAY_HEIGHT/2 - pos[1]))
         self.clicked = False

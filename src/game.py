@@ -1,11 +1,11 @@
-import time
 import math
 import pygame
-import objects.button as button
-import objects.level as level
-import objects.dice as dice
+from objects import button
+from objects import level
+from objects import dice
 
-import src.static_items.global_vars as global_vars
+from static_items import lists
+from src.static_items import global_vars
 
 class Game():
     def __init__(self):
@@ -21,7 +21,17 @@ class Game():
             "reroll": button.Button((0, -global_vars.DISPLAY_HEIGHT/3.5),
                                            self.sprites["restart"], 1),
             "submit": button.Button((0, global_vars.DISPLAY_HEIGHT/6.75),
-                                           self.sprites["submit"], 1)
+                                           self.sprites["submit"], 1),
+            "continue": button.Button((0, -global_vars.DISPLAY_HEIGHT/2.5),
+                                           self.sprites["continue"], 1),
+            "buy-reroll": button.Button((0, 0),
+                                           self.sprites["buy"], 1),
+            "buy-upgrade-count": button.Button((0, 30),
+                                           self.sprites["buy"], 1),
+            "buy-shop-size": button.Button((0, 60),
+                                           self.sprites["buy"], 1),
+            "buy-shop-rarity": button.Button((0, 90),
+                                           self.sprites["buy"], 1)
         }
 
         self.display = pygame.display.set_mode((global_vars.DISPLAY_WIDTH,
@@ -33,15 +43,31 @@ class Game():
         self.coins = 0
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
+        self.shop_items = 3
+        self.shop_level = 1
+        self.upgrade_amount = 2
+        self.reset_gamevars()
 
         pygame.init()
         self.game_loop()
+
+    def reset_gamevars(self):
+        # Gamevars
+        self.coins = 0
+        self.max_rerolls = 2
+        self.rerolls = self.max_rerolls
+        self.shop_items = 3
+        self.shop_level = 1
+        self.upgrade_amount = 2
 
     def load_images(self):
         self.sprites = {
             "restart": pygame.image.load("src/assets/DiceGameRe-roll.png"),
             "remaining": pygame.image.load("src/assets/DiceGameRemaining.png"),
-            "submit": pygame.image.load("src/assets/DiceGameSubmit.png")
+            "submit": pygame.image.load("src/assets/DiceGameSubmit.png"),
+            "continue": pygame.image.load("src/assets/DiceGameContinue.png"),
+            "buy": pygame.image.load("src/assets/DiceGameBuy.png"),
+            "shop": pygame.image.load("src/assets/DiceGameShop.png")
         }
 
     def game_background(self):
@@ -80,30 +106,70 @@ class Game():
         else:
             self.buttons["reroll"].draw(self.display, disabled=True)
         if self.buttons["submit"].draw(self.display):
-            self.rerolls = 0
+            self.level.un_select_dice(self.dice)
             self.state = "results"
 
-    def results(self):
-        complete_status, coin_increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
-        self.coins += coin_increase
+    def continue_button(self, complete_status, coin_increase):
+        if self.buttons["continue"].draw(self.display):
+            self.rerolls = self.max_rerolls
+            self.dice = self.level.reroll(self.dice)
+            self.state = "game"
+            if complete_status:
+                self.level = level.Level(self.level.level+1)
+                self.coins += coin_increase
+            else:
+                self.level = level.Level(1)
+                self.reset_gamevars()
+
+    def shop_background(self, complete_status):
         if complete_status:
             self.display.fill("#038731")
             global_vars.write_text("LEVEL " + str(self.level.level) + " COMPLETE!",
                        (0,global_vars.DISPLAY_HEIGHT/2.5), 50, self.display)
-            pygame.display.update()
-            time.sleep(3)
-            self.level = level.Level(self.level.level+1)
+            # Images
+            global_vars.draw_image(self.sprites["shop"], (2,2),
+                                    (0,global_vars.DISPLAY_HEIGHT/4.5), self.display)
+
+            self.shop_text()
+            self.shop_base_upgrades()
         else:
             self.display.fill("#870319")
             global_vars.write_text("LEVEL " + str(self.level.level) + " FAILED!",
                        (0,global_vars.DISPLAY_HEIGHT/2.5), 50, self.display)
-            pygame.display.update()
-            time.sleep(3)
-            self.level = level.Level(1)
-            self.coins = 0
-        self.rerolls = self.max_rerolls
-        self.dice = self.level.reroll(self.dice)
-        self.state = "game"
+
+    def shop_text(self):
+        # Text
+        global_vars.write_text("MORE REROLLS",
+                       (-global_vars.DISPLAY_WIDTH/6.5,0), 20, self.display)
+        global_vars.write_text("MORE UPGRADE SLOTS",
+                       (-global_vars.DISPLAY_WIDTH/6.5,30), 20, self.display)
+        global_vars.write_text("MORE SHOP ITEMS",
+                       (-global_vars.DISPLAY_WIDTH/6.5,60), 20, self.display)
+        global_vars.write_text("MORE RARES IN SHOP",
+                       (-global_vars.DISPLAY_WIDTH/6.5,90), 20, self.display)
+
+    def shop_base_upgrades(self):
+        # Buttons
+        if lists.max_reroll_upgrade_prices[self.max_rerolls]:
+            if self.buttons["buy-reroll"].draw(self.display):
+                self.max_rerolls += 1
+            global_vars.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
+                                   (0,0), 20, self.display)
+        if lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
+            if self.buttons["buy-upgrade-count"].draw(self.display):
+                self.upgrade_amount += 1
+            global_vars.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
+                                   (0,30), 20, self.display)
+        if lists.shop_size_upgrade_prices[self.shop_items]:
+            if self.buttons["buy-shop-size"].draw(self.display):
+                self.shop_items += 1
+            global_vars.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
+                                   (0,60), 20, self.display)
+        if lists.shop_rarity_upgrade_prices[self.shop_level]:
+            if self.buttons["buy-shop-rarity"].draw(self.display):
+                self.shop_level += 1
+            global_vars.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
+                                   (0,90), 20, self.display)
 
     def game_loop(self):
         # Interface
@@ -116,7 +182,10 @@ class Game():
                 self.game_buttons()
                 self.game_text()
             if self.state == "results":
-                self.results()
+                complete_status, coin_increase = self.level.complete(
+                    self.dice, self.max_rerolls, self.rerolls)
+                self.shop_background(complete_status)
+                self.continue_button(complete_status, coin_increase)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
