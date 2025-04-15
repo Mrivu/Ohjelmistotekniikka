@@ -107,6 +107,9 @@ class Game():
             self.buttons["reroll"].draw(self.display, disabled=True)
         if self.buttons["submit"].draw(self.display):
             self.level.un_select_dice(self.dice)
+            complete_status, coin_increase = self.level.complete(
+                self.dice, self.max_rerolls, self.rerolls)
+            self.coins += coin_increase
             self.state = "results"
 
     def continue_button(self, complete_status, coin_increase):
@@ -116,7 +119,6 @@ class Game():
             self.state = "game"
             if complete_status:
                 self.level = level.Level(self.level.level+1)
-                self.coins += coin_increase
             else:
                 self.level = level.Level(1)
                 self.reset_gamevars()
@@ -147,26 +149,29 @@ class Game():
                        (-global_vars.DISPLAY_WIDTH/6.5,60), 20, self.display)
         global_vars.write_text("MORE RARES IN SHOP",
                        (-global_vars.DISPLAY_WIDTH/6.5,90), 20, self.display)
+        global_vars.write_text("COINS: " + str(self.coins),
+                   (-global_vars.DISPLAY_WIDTH/2 + 80,
+                    -global_vars.DISPLAY_HEIGHT/2 + 30), 32, self.display)
 
     def shop_base_upgrades(self):
         # Buttons
         if lists.max_reroll_upgrade_prices[self.max_rerolls]:
-            if self.buttons["buy-reroll"].draw(self.display):
+            if self.buttons["buy-reroll"].draw(self.display) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]:
                 self.max_rerolls += 1
             global_vars.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
                                    (0,0), 20, self.display)
         if lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
-            if self.buttons["buy-upgrade-count"].draw(self.display):
+            if self.buttons["buy-upgrade-count"].draw(self.display) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
                 self.upgrade_amount += 1
             global_vars.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
                                    (0,30), 20, self.display)
         if lists.shop_size_upgrade_prices[self.shop_items]:
-            if self.buttons["buy-shop-size"].draw(self.display):
+            if self.buttons["buy-shop-size"].draw(self.display) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]:
                 self.shop_items += 1
             global_vars.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
                                    (0,60), 20, self.display)
         if lists.shop_rarity_upgrade_prices[self.shop_level]:
-            if self.buttons["buy-shop-rarity"].draw(self.display):
+            if self.buttons["buy-shop-rarity"].draw(self.display) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]:
                 self.shop_level += 1
             global_vars.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
                                    (0,90), 20, self.display)

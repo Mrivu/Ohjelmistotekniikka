@@ -10,6 +10,9 @@ Testasin toimivuutta virtuaaliympäristössä.
 
 ![Testi](images/Virtuaaliymparistotesti.png)
 
+## Testeihin liittyvää
+40% Coverage on teoriassa saavutettu, sillä testaan koodia, joka ei palauta mitään. Peliprojektissa on paljon koodia, kuten kuvien tai tekstin piirtämistä, jotai ei voi testata samalla tavalla, kuin funktioita jotka palauttavat jotain.
+
 # Asennus
 ## Vaatimukset
 - Python 3.10

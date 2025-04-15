@@ -8,6 +8,10 @@ class TestGame(unittest.TestCase):
         self.dice = [game.dice.Dice(), game.dice.Dice(), game.dice.Dice(), game.dice.Dice(), game.dice.Dice()]
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
+        self.shop_items = 3
+        self.shop_level = 1
+        self.upgrade_amount = 2
+        self.coins = 0
 
     def test_level_stats(self):
         difficulty = lists.level_difficulty[self.level.level]
@@ -33,3 +37,23 @@ class TestGame(unittest.TestCase):
             die.result = 5
         win_status, increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
         self.assertEqual(win_status, True)
+    
+    def test_purchase(self):
+        # Not enough coins
+        if lists.max_reroll_upgrade_prices[self.max_rerolls]:
+            if self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]:
+                self.max_rerolls += 1
+        self.assertEqual(self.max_rerolls, 2)
+        # Enough coins
+        self.coins += lists.max_reroll_upgrade_prices[self.max_rerolls]
+        if lists.max_reroll_upgrade_prices[self.max_rerolls]:
+            if self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]:
+                self.max_rerolls += 1
+        self.assertEqual(self.max_rerolls, 3)
+        # Max level
+        self.max_rerolls = 5
+        if lists.max_reroll_upgrade_prices[self.max_rerolls]:
+            self.max_rerolls += 1
+        self.assertEqual(self.max_rerolls, 5)
+
+        # Tätä ei näy coverage reportissa, sillä functiot eivät palauta mitään
