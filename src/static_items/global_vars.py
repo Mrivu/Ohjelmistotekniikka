@@ -4,11 +4,6 @@ import pygame
 DISPLAY_HEIGHT = 800
 DISPLAY_WIDTH = 1200
 
-# Gamevars
-COINS = 0
-MAX_REROLLS = 2
-REROLLS = MAX_REROLLS
-
 def write_text(text: str, pos, fontize: int, display, color=(255,255,255)):
     # Pos is offset from centre
     font = pygame.font.SysFont("Arial", fontize)

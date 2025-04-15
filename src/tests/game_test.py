@@ -1,11 +1,13 @@
 import unittest
 from src import game
-from src import lists
+import src.static_items.lists as lists
 
 class TestGame(unittest.TestCase):
     def setUp(self):
         self.level = game.level.Level(1)
         self.dice = [game.dice.Dice(), game.dice.Dice(), game.dice.Dice(), game.dice.Dice(), game.dice.Dice()]
+        self.max_rerolls = 2
+        self.rerolls = self.max_rerolls
 
     def test_level_stats(self):
         difficulty = lists.level_difficulty[self.level.level-1][self.level.level]
@@ -25,9 +27,9 @@ class TestGame(unittest.TestCase):
     def test_victory(self):
         for die in self.dice:
             die.result = 1
-        win = self.level.complete(self.dice)
-        self.assertEqual(win, False)
+        win_status, increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
+        self.assertEqual(win_status, False)
         for die in self.dice:
             die.result = 5
-        win = self.level.complete(self.dice)
-        self.assertEqual(win, True)
+        win_status, increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
+        self.assertEqual(win_status, True)

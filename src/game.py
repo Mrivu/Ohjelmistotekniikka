@@ -1,11 +1,11 @@
 import time
 import math
 import pygame
-import button
-import level
-import dice
+import objects.button as button
+import objects.level as level
+import objects.dice as dice
 
-import global_vars
+import src.static_items.global_vars as global_vars
 
 class Game():
     def __init__(self):
@@ -28,6 +28,11 @@ class Game():
                                                 global_vars.DISPLAY_HEIGHT))
 
         pygame.display.set_caption("Game")
+
+        # Gamevars
+        self.coins = 0
+        self.max_rerolls = 2
+        self.rerolls = self.max_rerolls
 
         pygame.init()
         self.game_loop()
@@ -55,7 +60,7 @@ class Game():
                    (0,global_vars.DISPLAY_HEIGHT/4), 40, self.display)
         global_vars.write_text("CURRENT: " + str(self.level.current_score(self.dice)),
                    (0,global_vars.DISPLAY_HEIGHT/5), 32, self.display)
-        global_vars.write_text("COINS: " + str(global_vars.COINS),
+        global_vars.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
                     -global_vars.DISPLAY_HEIGHT/2 + 30), 32, self.display)
         # REROLLS text
@@ -63,23 +68,25 @@ class Game():
             center=(global_vars.DISPLAY_WIDTH/2,
                     global_vars.DISPLAY_HEIGHT/2 + global_vars.DISPLAY_HEIGHT/3))
         self.display.blit(self.sprites["remaining"], remaining_spire_rect)
-        global_vars.write_text(str(global_vars.REROLLS),
+        global_vars.write_text(str(self.rerolls),
                    (40,-global_vars.DISPLAY_HEIGHT/3), 20, self.display)
 
     def game_buttons(self):
         # Buttons
-        if global_vars.REROLLS > 0:
+        if self.rerolls > 0:
             if self.buttons["reroll"].draw(self.display):
-                global_vars.REROLLS -= 1
+                self.rerolls -= 1
                 self.dice = self.level.reroll(self.dice)
         else:
             self.buttons["reroll"].draw(self.display, disabled=True)
         if self.buttons["submit"].draw(self.display):
-            global_vars.REROLLS = 0
+            self.rerolls = 0
             self.state = "results"
 
     def results(self):
-        if self.level.complete(self.dice):
+        complete_status, coin_increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
+        self.coins += coin_increase
+        if complete_status:
             self.display.fill("#038731")
             global_vars.write_text("LEVEL " + str(self.level.level) + " COMPLETE!",
                        (0,global_vars.DISPLAY_HEIGHT/2.5), 50, self.display)
@@ -93,12 +100,13 @@ class Game():
             pygame.display.update()
             time.sleep(3)
             self.level = level.Level(1)
-            global_vars.COINS = 0
-        global_vars.REROLLS = global_vars.MAX_REROLLS
+            self.coins = 0
+        self.rerolls = self.max_rerolls
         self.dice = self.level.reroll(self.dice)
         self.state = "game"
 
     def game_loop(self):
+        # Interface
         pygame.display.update()
         running = True
         self.dice = self.level.reroll(self.dice)

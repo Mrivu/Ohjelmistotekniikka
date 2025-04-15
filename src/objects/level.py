@@ -1,7 +1,6 @@
 import math
 import random
-import lists
-import global_vars
+import src.static_items.lists as lists
 
 class Level:
     def __init__(self, level: int, boss=False):
@@ -27,22 +26,21 @@ class Level:
             score += math.ceil(mul*(num+1)*amount)
         return score
 
-    def complete(self, dice):
+    def complete(self, dice, max_rerolls, rerolls):
         # Check win
         win = self.current_score(dice) >= self.clear_score()
+        increase = 0
         # Coin increases
         if win:
-            increase = 0
             # Reroll value
-            increase += global_vars.MAX_REROLLS - global_vars.REROLLS
+            increase += max_rerolls - rerolls
             # Excess
             extra = math.floor((self.current_score(dice) - self.clear_score())/
                                (self.clear_score()*0.5))
             increase += extra
             # Level comletion
             increase += 3
-            global_vars.COINS += increase
-        return win
+        return win, increase
 
     def boss_effect(self):
         if not self.boss:

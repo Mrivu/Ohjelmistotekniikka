@@ -1,5 +1,5 @@
 import pygame
-import global_vars
+import src.static_items.global_vars as global_vars
 
 class Button:
     def  __init__(self, pos, img, scale):

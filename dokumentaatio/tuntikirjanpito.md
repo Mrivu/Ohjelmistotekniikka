@@ -8,6 +8,7 @@
 | 4.4. | 3  | Core-gameplay logiikkaa |
 | 5.4. | 1  | Core-gameplay logiikkaa |
 | 8.4. | 3  | Pylint & hiomista |
+| 15.4. | 3  | Reformatoi koodi että että käyttöliittymä kutsuu luokan metodia joka palauttaa halutun arvon |
 | Yht | 16  |  |
 
 
