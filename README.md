@@ -9,3 +9,35 @@ Balatro-inspiroitu noppapeli.
 Testasin toimivuutta virtuaaliympäristössä.
 
 ![Testi](images/Virtuaaliymparistotesti.png)
+
+# Asennus
+```
+git clone https://github.com/Mrivu/Ohjelmistotekniikka.git
+```
+```
+cd Ohjelmistotekniikka
+```
+```
+poetry install
+```
+```
+poetry run invoke build
+```
+```
+poetry run invoke start
+```
+
+# Testaus
+```
+poetry run invoke test
+```
+### Testikattavuus
+```
+poetry run invoke coverage-report
+```
+Raportti generoituu _htmlcov_-hakemistoon.
+
+### Pylint
+```
+poetry run invoke pylint
+```
