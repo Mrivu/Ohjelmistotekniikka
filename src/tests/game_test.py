@@ -1,6 +1,9 @@
 import unittest
+import pygame
 from src import game
-import src.static_items.lists as lists
+
+from src.static_items import lists
+from src.static_items import global_vars
 
 class TestGame(unittest.TestCase):
     def setUp(self):
@@ -12,6 +15,7 @@ class TestGame(unittest.TestCase):
         self.shop_level = 1
         self.upgrade_amount = 2
         self.coins = 0
+        self.test_sprite = pygame.image.load("src/assets/DiceGameRe-roll.png")
 
     def test_level_stats(self):
         difficulty = lists.level_difficulty[self.level.level]
@@ -23,11 +27,11 @@ class TestGame(unittest.TestCase):
         clear_score = game.math.ceil(((difficulty+3)**2) + difficulty*3)
         self.assertEqual(self.level.clear_score(), clear_score)
         self.assertNotEqual(self.level.boss_effect(), None)
-    
+
     def test_dice_roll(self):
         results = self.level.reroll(self.dice)
         self.assertEqual(len(results), 5)
-    
+
     def test_victory(self):
         for die in self.dice:
             die.result = 1
@@ -38,6 +42,15 @@ class TestGame(unittest.TestCase):
         win_status, increase = self.level.complete(self.dice, self.max_rerolls, self.rerolls)
         self.assertEqual(win_status, True)
     
+    def test_button(self):
+        game.button.Button((0, -global_vars.DISPLAY_HEIGHT/2.5), self.test_sprite, (1,1))
+    
+    def test_dice(self):
+        game.dice.Dice()
+    
+    def test_level(self):
+        game.level.Level(1)
+
     def test_purchase(self):
         # Not enough coins
         if lists.max_reroll_upgrade_prices[self.max_rerolls]:

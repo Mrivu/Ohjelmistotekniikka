@@ -19,19 +19,19 @@ class Game():
         # Create Buttons
         self.buttons = {
             "reroll": button.Button((0, -global_vars.DISPLAY_HEIGHT/3.5),
-                                           self.sprites["restart"], 1),
+                                           self.sprites["restart"], (1,1)),
             "submit": button.Button((0, global_vars.DISPLAY_HEIGHT/6.75),
-                                           self.sprites["submit"], 1),
+                                           self.sprites["submit"], (1,1)),
             "continue": button.Button((0, -global_vars.DISPLAY_HEIGHT/2.5),
-                                           self.sprites["continue"], 1),
+                                           self.sprites["continue"], (1,1)),
             "buy-reroll": button.Button((0, 0),
-                                           self.sprites["buy"], 1),
+                                           self.sprites["buy"], (1,1)),
             "buy-upgrade-count": button.Button((0, 30),
-                                           self.sprites["buy"], 1),
+                                           self.sprites["buy"], (1,1)),
             "buy-shop-size": button.Button((0, 60),
-                                           self.sprites["buy"], 1),
+                                           self.sprites["buy"], (1,1)),
             "buy-shop-rarity": button.Button((0, 90),
-                                           self.sprites["buy"], 1)
+                                           self.sprites["buy"], (1,1))
         }
 
         self.display = pygame.display.set_mode((global_vars.DISPLAY_WIDTH,
@@ -48,7 +48,7 @@ class Game():
         self.upgrade_amount = 2
         self.reset_gamevars()
 
-        pygame.init()
+        pygame.init() # pylint: disable=no-member
         self.game_loop()
 
     def reset_gamevars(self):
@@ -156,22 +156,22 @@ class Game():
     def shop_base_upgrades(self):
         # Buttons
         if lists.max_reroll_upgrade_prices[self.max_rerolls]:
-            if self.buttons["buy-reroll"].draw(self.display) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]:
+            if self.buttons["buy-reroll"].draw(self.display) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]: # pylint: disable=line-too-long
                 self.max_rerolls += 1
             global_vars.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
                                    (0,0), 20, self.display)
         if lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
-            if self.buttons["buy-upgrade-count"].draw(self.display) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
+            if self.buttons["buy-upgrade-count"].draw(self.display) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]: # pylint: disable=line-too-long
                 self.upgrade_amount += 1
             global_vars.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
                                    (0,30), 20, self.display)
         if lists.shop_size_upgrade_prices[self.shop_items]:
-            if self.buttons["buy-shop-size"].draw(self.display) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]:
+            if self.buttons["buy-shop-size"].draw(self.display) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]: # pylint: disable=line-too-long
                 self.shop_items += 1
             global_vars.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
                                    (0,60), 20, self.display)
         if lists.shop_rarity_upgrade_prices[self.shop_level]:
-            if self.buttons["buy-shop-rarity"].draw(self.display) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]:
+            if self.buttons["buy-shop-rarity"].draw(self.display) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]: # pylint: disable=line-too-long
                 self.shop_level += 1
             global_vars.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
                                    (0,90), 20, self.display)
@@ -192,10 +192,10 @@ class Game():
                 self.shop_background(complete_status)
                 self.continue_button(complete_status, coin_increase)
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT: # pylint: disable=no-member
                     running = False
             pygame.display.update()
-        pygame.quit()
+        pygame.quit() # pylint: disable=no-member
 
 if __name__ == "__main__":
     Game()
