@@ -11,6 +11,10 @@ Testasin toimivuutta virtuaaliympäristössä.
 ![Testi](images/Virtuaaliymparistotesti.png)
 
 # Asennus
+## Vaatimukset
+- Python 3.10
+- Poetry 2.1.1
+## Asennuksen vaiheet
 ```
 git clone https://github.com/Mrivu/Ohjelmistotekniikka.git
 ```
@@ -21,23 +25,20 @@ cd Ohjelmistotekniikka
 poetry install
 ```
 ```
-poetry run invoke build
-```
-```
 poetry run invoke start
 ```
 
-# Testaus
+## Testaus
 ```
 poetry run invoke test
 ```
-### Testikattavuus
+## Testikattavuus
 ```
 poetry run invoke coverage-report
 ```
 Raportti generoituu _htmlcov_-hakemistoon.
 
-### Pylint
+## Pylint
 ```
 poetry run invoke pylint
 ```
