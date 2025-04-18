@@ -7,9 +7,9 @@ class Upgrade:
         self.rarity = rarity
         self.name = name
         self.scale = scale
-        width = img.get_width()
-        height = img.get_height()
-        self.image = pygame.transform.scale(img, (int(width * scale[0]), int(height * scale[1])))
+        self.width = img.get_width()
+        self.height = img.get_height()
+        self.image = pygame.transform.scale(img, (int(self.width * scale[0]), int(self.height * scale[1])))
         self.clicked = False
 
     def return_rect(self, pos):

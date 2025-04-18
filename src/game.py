@@ -1,11 +1,13 @@
 import math
+import random
 import pygame
 from objects import button
 from objects import level
 from objects import dice
 
 from static_items import lists
-from src.static_items import global_vars
+from static_items import global_vars
+from static_items import asset_manager
 
 class Game():
     def __init__(self):
@@ -18,21 +20,16 @@ class Game():
 
         # Create Buttons
         self.buttons = {
-            "reroll": button.Button((0, -global_vars.DISPLAY_HEIGHT/3.5),
-                                           self.sprites["restart"], (1,1)),
-            "submit": button.Button((0, global_vars.DISPLAY_HEIGHT/6.75),
-                                           self.sprites["submit"], (1,1)),
-            "continue": button.Button((0, -global_vars.DISPLAY_HEIGHT/2.5),
-                                           self.sprites["continue"], (1,1)),
-            "buy-reroll": button.Button((0, 0),
-                                           self.sprites["buy"], (1,1)),
-            "buy-upgrade-count": button.Button((0, 30),
-                                           self.sprites["buy"], (1,1)),
-            "buy-shop-size": button.Button((0, 60),
-                                           self.sprites["buy"], (1,1)),
-            "buy-shop-rarity": button.Button((0, 90),
-                                           self.sprites["buy"], (1,1))
+            "reroll": button.Button(self.sprites["restart"], (1,1)),
+            "submit": button.Button(self.sprites["submit"], (1,1)),
+            "continue": button.Button(self.sprites["continue"], (1,1)),
+            "buy-reroll": button.Button(self.sprites["buy"], (1,1)),
+            "buy-upgrade-count": button.Button(self.sprites["buy"], (1,1)),
+            "buy-shop-size": button.Button(self.sprites["buy"], (1,1)),
+            "buy-shop-rarity": button.Button(self.sprites["buy"], (1,1))
         }
+
+        self.upgrades = []
 
         self.display = pygame.display.set_mode((global_vars.DISPLAY_WIDTH,
                                                 global_vars.DISPLAY_HEIGHT))
@@ -46,6 +43,7 @@ class Game():
         self.shop_items = 3
         self.shop_level = 1
         self.upgrade_amount = 2
+        self.shop_buffer = False
         self.reset_gamevars()
 
         pygame.init() # pylint: disable=no-member
@@ -53,12 +51,14 @@ class Game():
 
     def reset_gamevars(self):
         # Gamevars
-        self.coins = 0
+        self.coins = 11
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
-        self.shop_items = 3
+        self.shop_items = 6
         self.shop_level = 1
         self.upgrade_amount = 2
+        self.shop_buffer = False
+        self.upgrades = []
 
     def load_images(self):
         self.sprites = {
@@ -100,30 +100,31 @@ class Game():
     def game_buttons(self):
         # Buttons
         if self.rerolls > 0:
-            if self.buttons["reroll"].draw(self.display):
+            if self.buttons["reroll"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/3.5)):
                 self.rerolls -= 1
                 self.dice = self.level.reroll(self.dice)
         else:
-            self.buttons["reroll"].draw(self.display, disabled=True)
-        if self.buttons["submit"].draw(self.display):
+            self.buttons["reroll"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/3.5), disabled=True)
+        if self.buttons["submit"].draw(self.display, (0, global_vars.DISPLAY_HEIGHT/6.75),):
             self.level.un_select_dice(self.dice)
-            complete_status, coin_increase = self.level.complete(
-                self.dice, self.max_rerolls, self.rerolls)
-            self.coins += coin_increase
-            self.state = "results"
+            self.state = "init_shop"
 
-    def continue_button(self, complete_status, coin_increase):
-        if self.buttons["continue"].draw(self.display):
+    def continue_button(self, complete_status, upgrades):
+        if self.buttons["continue"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/2.5)):
             self.rerolls = self.max_rerolls
             self.dice = self.level.reroll(self.dice)
             self.state = "game"
             if complete_status:
                 self.level = level.Level(self.level.level+1)
+                for upgrade in upgrades:
+                    self.buttons[upgrade.name] = None
+                    upgrades = []
             else:
                 self.level = level.Level(1)
                 self.reset_gamevars()
-
-    def shop_background(self, complete_status):
+                upgrades = []
+        
+    def shop_background(self, complete_status, upgrades):
         if complete_status:
             self.display.fill("#038731")
             global_vars.write_text("LEVEL " + str(self.level.level) + " COMPLETE!",
@@ -134,6 +135,8 @@ class Game():
 
             self.shop_text()
             self.shop_base_upgrades()
+            self.shop_upgrades(upgrades)
+            self.display_upgrades()
         else:
             self.display.fill("#870319")
             global_vars.write_text("LEVEL " + str(self.level.level) + " FAILED!",
@@ -156,41 +159,100 @@ class Game():
     def shop_base_upgrades(self):
         # Buttons
         if lists.max_reroll_upgrade_prices[self.max_rerolls]:
-            if self.buttons["buy-reroll"].draw(self.display) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]: # pylint: disable=line-too-long
+            if self.buttons["buy-reroll"].draw(self.display, (0,0)) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]: # pylint: disable=line-too-long
+                self.coins -= lists.max_reroll_upgrade_prices[self.max_rerolls]
                 self.max_rerolls += 1
             global_vars.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
                                    (0,0), 20, self.display)
         if lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
-            if self.buttons["buy-upgrade-count"].draw(self.display) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]: # pylint: disable=line-too-long
+            if self.buttons["buy-upgrade-count"].draw(self.display, (0,30)) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]: # pylint: disable=line-too-long
+                self.coins -= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]
                 self.upgrade_amount += 1
             global_vars.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
                                    (0,30), 20, self.display)
         if lists.shop_size_upgrade_prices[self.shop_items]:
-            if self.buttons["buy-shop-size"].draw(self.display) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]: # pylint: disable=line-too-long
+            if self.buttons["buy-shop-size"].draw(self.display, (0,60)) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]: # pylint: disable=line-too-long
+                self.coins -= lists.shop_size_upgrade_prices[self.shop_items]
                 self.shop_items += 1
             global_vars.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
                                    (0,60), 20, self.display)
         if lists.shop_rarity_upgrade_prices[self.shop_level]:
-            if self.buttons["buy-shop-rarity"].draw(self.display) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]: # pylint: disable=line-too-long
+            if self.buttons["buy-shop-rarity"].draw(self.display, (0,90)) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]: # pylint: disable=line-too-long
+                self.coins -= lists.shop_rarity_upgrade_prices[self.shop_level]
                 self.shop_level += 1
             global_vars.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
                                    (0,90), 20, self.display)
+
+    def get_upgrades(self):
+        rarity_array = lists.shop_level_rarities[self.shop_level]
+        upgrades = []
+        # Generoitu tekoälyllä - alku
+        available_upgrades = {
+            rarity: [
+                upg for upg in asset_manager.upgrades[rarity]
+                if upg not in self.upgrades
+            ]
+            for rarity in asset_manager.upgrades
+        }
+        # Generoitu tekoälyllä - loppu
+        for i in range(self.shop_items):
+            if random.randint(1,100) <= rarity_array[0]:
+                rarity = "green"
+            elif random.randint(1,100) <= rarity_array[1]:
+                rarity = "blue"
+            else:
+                rarity = "red"
+            if len(available_upgrades[rarity]) > 0:
+                upgrade = available_upgrades[rarity][random.randint(0, len(available_upgrades[rarity])-1)]
+                available_upgrades[rarity].remove(upgrade)
+                upgrades.append(upgrade)
+                self.buttons[upgrade.name] = button.Button(self.sprites["buy"], (1,1))
+        return upgrades
+
+    def init_shop(self, coin_increase):
+        self.coins += coin_increase
+        self.state = "results"
+        return self.get_upgrades()
+
+    def shop_upgrades(self, upgrades):
+        for i, upgrade in enumerate(upgrades):
+            upgrade.draw(self.display, ((upgrade.width+10)*(i%3), -60 if i < 3 else -120))
+            if self.buttons[upgrade.name].draw(self.display, ((upgrade.width+10)*(i%3), -100 if i < 3 else -160)) and self.coins >= 5:
+                if not self.shop_buffer and len(self.upgrades) < self.upgrade_amount:
+                    self.coins -= 5
+                    self.upgrades.append(upgrade)
+                    self.buttons[upgrade.name] = None
+                    upgrades.remove(upgrade)
+                    self.shop_buffer = True
+            global_vars.write_text("5",((upgrade.width+10)*(i%3),-100 if i < 3 else -160), 20, self.display)
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.shop_buffer = False
+    def display_upgrades(self):
+        global_vars.write_text("Upgrades owned: " + str(len(self.upgrades)) + "/" + str(self.upgrade_amount),(-global_vars.DISPLAY_WIDTH/3,300), 26, self.display)
+        for i, upgrade in enumerate(self.upgrades):
+            upgrade.draw(self.display, (-global_vars.DISPLAY_WIDTH/3, 250 - i*50))
 
     def game_loop(self):
         # Interface
         pygame.display.update()
         running = True
         self.dice = self.level.reroll(self.dice)
+        complete_status = None
+        coin_increase = 0
+        upgrades = []
         while running:
             if self.state == "game":
                 self.game_background()
                 self.game_buttons()
                 self.game_text()
-            if self.state == "results":
+                self.display_upgrades()
+            if self.state == "init_shop":
                 complete_status, coin_increase = self.level.complete(
                     self.dice, self.max_rerolls, self.rerolls)
-                self.shop_background(complete_status)
-                self.continue_button(complete_status, coin_increase)
+                upgrades = self.init_shop(coin_increase)
+            if self.state == "results":
+                self.shop_background(complete_status, upgrades)
+                self.continue_button(complete_status, upgrades)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT: # pylint: disable=no-member
                     running = False

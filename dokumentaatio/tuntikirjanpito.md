@@ -9,7 +9,9 @@
 | 5.4. | 1  | Core-gameplay logiikkaa |
 | 8.4. | 3  | Pylint & hiomista |
 | 15.4. | 3  | Reformatoi koodi ja hio pelin runkoa |
-| Yht | 16 |  |
+| 16.4. | 1  | Upgrade logiikka |
+| 18.4. | 2.5  | Upgradet ja niidne ostaminen |
+| Yht | 19.5 |  |
 
 
 

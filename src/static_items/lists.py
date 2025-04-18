@@ -10,6 +10,15 @@ level_difficulty = {
     5: 2.4,
 }
 
+shop_level_rarities = {
+    1: [100,0,0],
+    "1": [75,20,5],
+    2: [65,25,10],
+    3: [55,30,15],
+    4: [45,35,20],
+    5: [35,40,35]
+}
+
 # Upgrade costs
 max_reroll_upgrade_prices = {
     2: 10,
