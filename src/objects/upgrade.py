@@ -9,7 +9,8 @@ class Upgrade:
         self.scale = scale
         self.width = img.get_width()
         self.height = img.get_height()
-        self.image = pygame.transform.scale(img, (int(self.width * scale[0]), int(self.height * scale[1])))
+        self.image = pygame.transform.scale(img, (int(self.width * scale[0]),
+                                                  int(self.height * scale[1])))
         self.clicked = False
 
     def return_rect(self, pos):
@@ -18,3 +19,13 @@ class Upgrade:
 
     def draw(self, display, pos):
         display.blit(self.image, self.return_rect(pos))
+        rect = self.return_rect(pos)
+        action = False
+        mouse_pos = pygame.mouse.get_pos()
+        if rect.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0] == 1: # pylint: disable=duplicate-code
+            if self.clicked is False:
+                action = True
+                self.clicked = True
+        if rect.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+        return action

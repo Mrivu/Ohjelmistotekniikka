@@ -17,3 +17,9 @@ upgrades = {
     "blue": [],
     "red": []
 }
+
+upgrade_descriptions = {
+    "Fear of fours": "+4 coins if there are no 4’s in your final hand at the end of the level.",
+    "Five fives": "If your hand has five fives, gain 5 coins and 55 points.",
+    "Curtain call": "When you submit your hand, reroll any one’s."
+}

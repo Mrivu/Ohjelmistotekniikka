@@ -43,7 +43,7 @@ class TestGame(unittest.TestCase):
         self.assertEqual(win_status, True)
     
     def test_button(self):
-        game.button.Button((0, -global_vars.DISPLAY_HEIGHT/2.5), self.test_sprite, (1,1))
+        game.button.Button(self.test_sprite, (1,1))
     
     def test_dice(self):
         game.dice.Dice()
