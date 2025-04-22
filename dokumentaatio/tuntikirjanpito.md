@@ -10,8 +10,9 @@
 | 8.4. | 3  | Pylint & hiomista |
 | 15.4. | 3  | Reformatoi koodi ja hio pelin runkoa |
 | 16.4. | 1  | Upgrade logiikka |
-| 18.4. | 2.5  | Upgradet ja niidne ostaminen |
-| Yht | 19.5 |  |
+| 18.4. | 2.5  | Upgradet ja niiden ostaminen |
+| 22.4. | 2  | Upgradejen myyminen ja niiden selitys klikkaamalla |
+| Yht | 21.5 |  |
 
 
 

@@ -19,6 +19,13 @@ shop_level_rarities = {
     5: [35,40,35]
 }
 
+# rarity, buy, sell
+rarity_values = {
+    "Green": [5,3],
+    "Blue": [10,6],
+    "Red": [15,9]
+}
+
 # Upgrade costs
 max_reroll_upgrade_prices = {
     2: 10,

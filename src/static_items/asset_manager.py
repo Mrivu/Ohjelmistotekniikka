@@ -9,13 +9,13 @@ green_sprites = {
 }
 
 upgrades = {
-    "green": [
+    "Green": [
         upgrade.Upgrade("Green", "Fear of fours", green_sprites["Fear of fours"], (1,1)),
         upgrade.Upgrade("Green", "Five fives", green_sprites["Five fives"], (1,1)),
         upgrade.Upgrade("Green", "Curtain call", green_sprites["Curtain call"], (1,1))
     ],
-    "blue": [],
-    "red": []
+    "Blue": [],
+    "Red": []
 }
 
 upgrade_descriptions = {

@@ -201,11 +201,11 @@ class Game():
         # Generoitu tekoälyllä - loppu
         for i in range(self.shop_items):
             if random.randint(1,100) <= rarity_array[0]:
-                rarity = "green"
+                rarity = "Green"
             elif random.randint(1,100) <= rarity_array[1]:
-                rarity = "blue"
+                rarity = "Blue"
             else:
-                rarity = "red"
+                rarity = "Red"
             if len(available_upgrades[rarity]) > 0:
                 upgrade = available_upgrades[rarity][
                     random.randint(0, len(available_upgrades[rarity])-1)]
@@ -231,6 +231,7 @@ class Game():
                     self.coins -= 5
                     self.upgrades.append(upgrade)
                     self.buttons[upgrade.name] = None
+                    self.buttons[upgrade.name+"_sell"] = button.Button(self.sprites["buy"], (1,1))
                     upgrades.remove(upgrade)
                     self.shop_buffer = True
             global_vars.write_text("5",
@@ -239,7 +240,7 @@ class Game():
         if pygame.mouse.get_pressed()[0] == 0:
             self.shop_buffer = False
 
-    def display_upgrades(self):
+    def display_upgrades(self, can_sell=True):
         global_vars.write_text("Upgrades owned: " + str(len(self.upgrades)) +
                                "/" + str(self.upgrade_amount),
                                (-global_vars.DISPLAY_WIDTH/3,300), 26, self.display)
@@ -247,6 +248,19 @@ class Game():
             if upgrade.draw(self.display, (-global_vars.DISPLAY_WIDTH/2.5, 250 - i*50)):
                 self.display_timer[0] = self.display_timer[1]
                 self.display_timer[2] = upgrade.name
+        if can_sell:
+            for i, upgrade in enumerate(self.upgrades):
+                global_vars.write_text("Sell: ",
+                               (-global_vars.DISPLAY_WIDTH/3, 250 - i*50),
+                               25, self.display)
+                if self.buttons[upgrade.name+"_sell"].draw(self.display,
+                                                           (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50)):
+                    self.buttons[upgrade.name+"_sell"] = None
+                    self.coins += lists.rarity_values[upgrade.rarity][1]
+                    self.upgrades.remove(upgrade)
+                global_vars.write_text(str(lists.rarity_values[upgrade.rarity][1]),
+                                        (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50),
+                                        20, self.display)
 
     def upgrade_description(self, upgrade_name):
         x = global_vars.DISPLAY_WIDTH*0.8
