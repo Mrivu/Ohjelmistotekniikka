@@ -1,9 +1,15 @@
 import random
 import pygame
-from src.static_items import global_vars
-
+from src.static_items import funcs
 
 class Dice:
+    """Yksittäisen nopan logiikka
+    Attributes:
+        self.sides = noppien silmälukujen määrä
+        self.result = nopanheiton tulos
+        self.selected = nopan valittu tila
+        self.clicked = onko noppaa painettu
+    """
     def __init__(self, sides=6):
         self.sides = sides
         self.result = None
@@ -19,9 +25,9 @@ class Dice:
     def draw(self, text, position, display):
         action = False
         if self.selected:
-            dice_rect = global_vars.write_text(text, position, 30, display, color=(0,0,0))
+            dice_rect = funcs.write_text(text, position, 30, display, color=(0,0,0))
         else:
-            dice_rect = global_vars.write_text(text, position, 30, display)
+            dice_rect = funcs.write_text(text, position, 30, display)
         mouse_pos = pygame.mouse.get_pos()
 
         if dice_rect.collidepoint(mouse_pos) and pygame.mouse.get_pressed()[0] == 1:

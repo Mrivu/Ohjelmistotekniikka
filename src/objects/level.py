@@ -3,6 +3,11 @@ import random
 from src.static_items import lists
 
 class Level:
+    """Tason logiikka
+    Attributes:
+        self.level = tasonumero
+        self.boss = onko boss-kenttä
+    """
     def __init__(self, level: int, boss=False):
         self.level = level
         self.boss = boss

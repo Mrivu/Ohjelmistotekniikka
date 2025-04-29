@@ -3,6 +3,17 @@ import pygame
 from src.static_items import global_vars
 
 class Upgrade:
+    """Yksittäisen päivityksen logiikka
+
+    Attributes:
+        self.rarity = harvinaisuus
+        self.name = nimi
+        self.scale = kokokerroin
+        self.width = leveys
+        self.height = korkeus
+        self.image = kuva
+        self.clicked = tsekkaa jos klikattu
+    """
     def __init__(self, rarity, name, img, scale):
         self.rarity = rarity
         self.name = name

@@ -2,6 +2,13 @@ import pygame
 from src.static_items import global_vars
 
 class Button:
+    """Sisältää napin logiikan
+
+    Attributes:
+        self.scale = napin koko kerroin
+        self.image = kuva
+        self.clicked = varmistaa klikkaamisen tapahtuvan kerran
+    """
     def  __init__(self, img, scale):
         self.scale = scale
         width = img.get_width()

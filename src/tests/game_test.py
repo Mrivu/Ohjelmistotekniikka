@@ -3,7 +3,6 @@ import pygame
 from src import game
 
 from src.static_items import lists
-from src.static_items import global_vars
 
 class TestGame(unittest.TestCase):
     def setUp(self):

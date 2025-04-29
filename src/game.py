@@ -8,9 +8,29 @@ from objects import dice
 
 from static_items import lists
 from static_items import global_vars
+from static_items import funcs
 from static_items import asset_manager
 
 class Game():
+    """Sisältää pelin käyttöliittymän
+
+    Attributes:
+        level: kenttäluokka
+        state: pelin-tila
+        dice: pelaajan nopat
+        buttons: käyttöliittymän napit
+        upgrades: pelaajan päivitykset
+        display: pygame display
+
+        self.coins = pelaajan kolikot
+        self.max_rerolls = uudelleenheittojen määrä per kierros
+        self.rerolls = uudelleenheitot
+        self.shop_items = kaupassa esiintyvien päivitysten määrä
+        self.shop_level = kaupan todennäköisyysjakauma
+        self.upgrade_amount = päivitysten enimmäismäärä
+        self.shop_buffer = estää vahingolliset moni-ostot
+        self.display_timer = säätää selitystekstin aikaa
+    """
     def __init__(self):
         self.load_images()
 
@@ -83,13 +103,13 @@ class Game():
 
     def game_text(self):
         # Text
-        global_vars.write_text("LEVEL: " + str(self.level.level),
+        funcs.write_text("LEVEL: " + str(self.level.level),
                    (0,global_vars.DISPLAY_HEIGHT/3), 55, self.display)
-        global_vars.write_text("SCORE TO BEAT: " + str(self.level.clear_score()),
+        funcs.write_text("SCORE TO BEAT: " + str(self.level.clear_score()),
                    (0,global_vars.DISPLAY_HEIGHT/4), 40, self.display)
-        global_vars.write_text("CURRENT: " + str(self.level.current_score(self.dice)),
+        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice)),
                    (0,global_vars.DISPLAY_HEIGHT/5), 32, self.display)
-        global_vars.write_text("COINS: " + str(self.coins),
+        funcs.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
                     -global_vars.DISPLAY_HEIGHT/2 + 30), 32, self.display)
         # REROLLS text
@@ -97,7 +117,7 @@ class Game():
             center=(global_vars.DISPLAY_WIDTH/2,
                     global_vars.DISPLAY_HEIGHT/2 + global_vars.DISPLAY_HEIGHT/3.35))
         self.display.blit(self.sprites["remaining"], remaining_spire_rect)
-        global_vars.write_text(str(self.rerolls),
+        funcs.write_text(str(self.rerolls),
                    (40,-global_vars.DISPLAY_HEIGHT/3.35), 20, self.display)
 
     def game_buttons(self):
@@ -131,10 +151,10 @@ class Game():
     def shop_background(self, complete_status, upgrades):
         if complete_status:
             self.display.fill("#038731")
-            global_vars.write_text("LEVEL " + str(self.level.level) + " COMPLETE!",
+            funcs.write_text("LEVEL " + str(self.level.level) + " COMPLETE!",
                        (0,global_vars.DISPLAY_HEIGHT/2.5), 50, self.display)
             # Images
-            global_vars.draw_image(self.sprites["shop"], (2,2),
+            funcs.draw_image(self.sprites["shop"], (2,2),
                                     (0,global_vars.DISPLAY_HEIGHT/4.25), self.display)
 
             self.shop_text()
@@ -143,20 +163,20 @@ class Game():
             self.display_upgrades()
         else:
             self.display.fill("#870319")
-            global_vars.write_text("LEVEL " + str(self.level.level) + " FAILED!",
+            funcs.write_text("LEVEL " + str(self.level.level) + " FAILED!",
                        (0,global_vars.DISPLAY_HEIGHT/2.5), 50, self.display)
 
     def shop_text(self):
         # Text
-        global_vars.write_text("MORE REROLLS",
+        funcs.write_text("MORE REROLLS",
                        (-global_vars.DISPLAY_WIDTH/6.5,0), 20, self.display)
-        global_vars.write_text("MORE UPGRADE SLOTS",
+        funcs.write_text("MORE UPGRADE SLOTS",
                        (-global_vars.DISPLAY_WIDTH/6.5,30), 20, self.display)
-        global_vars.write_text("MORE SHOP ITEMS",
+        funcs.write_text("MORE SHOP ITEMS",
                        (-global_vars.DISPLAY_WIDTH/6.5,60), 20, self.display)
-        global_vars.write_text("MORE RARES IN SHOP",
+        funcs.write_text("MORE RARES IN SHOP",
                        (-global_vars.DISPLAY_WIDTH/6.5,90), 20, self.display)
-        global_vars.write_text("COINS: " + str(self.coins),
+        funcs.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
                     -global_vars.DISPLAY_HEIGHT/2 + 30), 32, self.display)
 
@@ -166,25 +186,25 @@ class Game():
             if self.buttons["buy-reroll"].draw(self.display, (-30,0)) and self.coins >= lists.max_reroll_upgrade_prices[self.max_rerolls]: # pylint: disable=line-too-long
                 self.coins -= lists.max_reroll_upgrade_prices[self.max_rerolls]
                 self.max_rerolls += 1
-            global_vars.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
+            funcs.write_text(str(lists.max_reroll_upgrade_prices[self.max_rerolls]),
                                    (-30,0), 20, self.display)
         if lists.upgrade_amount_upgrade_prices[self.upgrade_amount]:
             if self.buttons["buy-upgrade-count"].draw(self.display, (-30,30)) and self.coins >= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]: # pylint: disable=line-too-long
                 self.coins -= lists.upgrade_amount_upgrade_prices[self.upgrade_amount]
                 self.upgrade_amount += 1
-            global_vars.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
+            funcs.write_text(str(lists.upgrade_amount_upgrade_prices[self.upgrade_amount]),
                                    (-30,30), 20, self.display)
         if lists.shop_size_upgrade_prices[self.shop_items]:
             if self.buttons["buy-shop-size"].draw(self.display, (-30,60)) and self.coins >= lists.shop_size_upgrade_prices[self.shop_items]: # pylint: disable=line-too-long
                 self.coins -= lists.shop_size_upgrade_prices[self.shop_items]
                 self.shop_items += 1
-            global_vars.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
+            funcs.write_text(str(lists.shop_size_upgrade_prices[self.shop_items]),
                                    (-30,60), 20, self.display)
         if lists.shop_rarity_upgrade_prices[self.shop_level]:
             if self.buttons["buy-shop-rarity"].draw(self.display, (-30,90)) and self.coins >= lists.shop_rarity_upgrade_prices[self.shop_level]: # pylint: disable=line-too-long
                 self.coins -= lists.shop_rarity_upgrade_prices[self.shop_level]
                 self.shop_level += 1
-            global_vars.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
+            funcs.write_text(str(lists.shop_rarity_upgrade_prices[self.shop_level]),
                                    (-30,90), 20, self.display)
 
     def get_upgrades(self):
@@ -234,14 +254,14 @@ class Game():
                     self.buttons[upgrade.name+"_sell"] = button.Button(self.sprites["buy"], (1,1))
                     upgrades.remove(upgrade)
                     self.shop_buffer = True
-            global_vars.write_text("5",
+            funcs.write_text("5",
                                    ((upgrade.width+10)*(i%3)+40,
                                         50 if i < 3 else -10), 20, self.display)
         if pygame.mouse.get_pressed()[0] == 0:
             self.shop_buffer = False
 
     def display_upgrades(self, can_sell=True):
-        global_vars.write_text("Upgrades owned: " + str(len(self.upgrades)) +
+        funcs.write_text("Upgrades owned: " + str(len(self.upgrades)) +
                                "/" + str(self.upgrade_amount),
                                (-global_vars.DISPLAY_WIDTH/3,300), 26, self.display)
         for i, upgrade in enumerate(self.upgrades):
@@ -250,7 +270,7 @@ class Game():
                 self.display_timer[2] = upgrade.name
         if can_sell:
             for i, upgrade in enumerate(self.upgrades):
-                global_vars.write_text("Sell: ",
+                funcs.write_text("Sell: ",
                                (-global_vars.DISPLAY_WIDTH/3, 250 - i*50),
                                25, self.display)
                 if self.buttons[upgrade.name+"_sell"].draw(self.display,
@@ -258,7 +278,7 @@ class Game():
                     self.buttons[upgrade.name+"_sell"] = None
                     self.coins += lists.rarity_values[upgrade.rarity][1]
                     self.upgrades.remove(upgrade)
-                global_vars.write_text(str(lists.rarity_values[upgrade.rarity][1]),
+                funcs.write_text(str(lists.rarity_values[upgrade.rarity][1]),
                                         (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50),
                                         20, self.display)
 
@@ -271,10 +291,10 @@ class Game():
                           ((global_vars.DISPLAY_WIDTH/2-(x/2)),
                                       (global_vars.DISPLAY_HEIGHT/2 +
                                        global_vars.DISPLAY_HEIGHT/2.5 - y*0.65)))
-        global_vars.write_text(upgrade_name + ":",
+        funcs.write_text(upgrade_name + ":",
                                (0, -global_vars.DISPLAY_HEIGHT/2.5 + 30),
                                25, self.display)
-        global_vars.write_text(asset_manager.upgrade_descriptions[upgrade_name],
+        funcs.write_text(asset_manager.upgrade_descriptions[upgrade_name],
                                (0, -global_vars.DISPLAY_HEIGHT/2.5),
                                20, self.display)
 

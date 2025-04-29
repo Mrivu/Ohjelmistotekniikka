@@ -12,7 +12,8 @@
 | 16.4. | 1  | Upgrade logiikka |
 | 18.4. | 2.5  | Upgradet ja niiden ostaminen |
 | 22.4. | 2  | Upgradejen myyminen ja niiden selitys klikkaamalla |
-| Yht | 21.5 |  |
+| 29.4. | 1  | Docsring |
+| Yht | 22.5 |  |
 
 
 
