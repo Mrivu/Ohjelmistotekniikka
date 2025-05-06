@@ -17,9 +17,14 @@ class Level:
         difficulty = lists.level_difficulty[self.level]
         return math.ceil(((difficulty+3)**2) + difficulty*3)
 
-    def current_score(self, dice):
+    def current_score(self, dice, upgrades):
         score = 0
-        for num in range(20):
+        if "Curtain call" in [name.name for name in upgrades]:
+            for i in dice:
+                if i.result == 1:
+                    i.selected = True
+            dice = self.reroll(dice)
+        for num in range(6):
             amount = [die.get_result() for die in dice].count(num+1)
             mul = 1
             if amount == 3:
@@ -29,22 +34,29 @@ class Level:
             if amount == 5:
                 mul = 3
             score += math.ceil(mul*(num+1)*amount)
+        if "Five fives" in [name.name for name in upgrades] and len(set(dice)) == 1 and set(dice).pop() == 5:
+            score += 55
         return score
-
-    def complete(self, dice, max_rerolls, rerolls):
+    
+    def complete(self, dice, max_rerolls, rerolls, upgrades):
+        print(upgrades)
         # Check win
-        win = self.current_score(dice) >= self.clear_score()
+        score = self.current_score(dice, upgrades)
+        win = score >= self.clear_score()
         increase = 0
         # Coin increases
         if win:
             # Reroll value
-            increase += max_rerolls - rerolls
+            increase += (max_rerolls - rerolls)*2
             # Excess
-            extra = math.floor((self.current_score(dice) - self.clear_score())/
-                               (self.clear_score()*0.5))
+            extra = max(math.floor((score - self.clear_score()*2)), 0)
             increase += extra
-            # Level comletion
+            # Level completion
             increase += 3
+            if "Fear of fours" in [name.name for name in upgrades]:
+                increase += 4
+            if "Five fives" in [name.name for name in upgrades]:
+                increase += 5
         return win, increase
 
     def boss_effect(self):

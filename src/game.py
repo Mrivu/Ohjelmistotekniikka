@@ -73,10 +73,10 @@ class Game():
 
     def reset_gamevars(self):
         # Gamevars
-        self.coins = 11
+        self.coins = 0
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
-        self.shop_items = 6
+        self.shop_items = 3
         self.shop_level = 1
         self.upgrade_amount = 2
         self.shop_buffer = False
@@ -107,7 +107,7 @@ class Game():
                    (0,global_vars.DISPLAY_HEIGHT/3), 55, self.display)
         funcs.write_text("SCORE TO BEAT: " + str(self.level.clear_score()),
                    (0,global_vars.DISPLAY_HEIGHT/4), 40, self.display)
-        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice)),
+        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice, self.upgrades)),
                    (0,global_vars.DISPLAY_HEIGHT/5), 32, self.display)
         funcs.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
@@ -134,7 +134,7 @@ class Game():
             self.state = "init_shop"
 
     def continue_button(self, complete_status, upgrades):
-        if self.buttons["continue"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/4)):
+        if self.buttons["continue"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/8)):
             self.rerolls = self.max_rerolls
             self.dice = self.level.reroll(self.dice)
             self.state = "game"
@@ -274,10 +274,11 @@ class Game():
                                (-global_vars.DISPLAY_WIDTH/3, 250 - i*50),
                                25, self.display)
                 if self.buttons[upgrade.name+"_sell"].draw(self.display,
-                                                           (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50)):
+                                                           (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50)) and not self.shop_buffer:
                     self.buttons[upgrade.name+"_sell"] = None
                     self.coins += lists.rarity_values[upgrade.rarity][1]
                     self.upgrades.remove(upgrade)
+                    self.shop_buffer = True
                 funcs.write_text(str(lists.rarity_values[upgrade.rarity][1]),
                                         (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50),
                                         20, self.display)
@@ -316,14 +317,14 @@ class Game():
                 self.game_background()
                 self.game_buttons()
                 self.game_text()
-                self.display_upgrades()
+                self.display_upgrades(can_sell=False)
 
                 # desc countdown
                 if self.display_timer[0] > 0:
                     self.desc_countdown(self.display_timer[2])
             if self.state == "init_shop":
                 complete_status, coin_increase = self.level.complete(
-                    self.dice, self.max_rerolls, self.rerolls)
+                    self.dice, self.max_rerolls, self.rerolls, self.upgrades)
                 upgrades = self.init_shop(coin_increase)
             if self.state == "results":
                 self.shop_background(complete_status, upgrades)

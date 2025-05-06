@@ -13,6 +13,7 @@
 | 18.4. | 2.5  | Upgradet ja niiden ostaminen |
 | 22.4. | 2  | Upgradejen myyminen ja niiden selitys klikkaamalla |
 | 29.4. | 1  | Docsring |
+| 6.5. | 2  | Docsring |
 | Yht | 22.5 |  |
 
 

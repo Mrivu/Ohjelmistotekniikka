@@ -16,8 +16,14 @@
 - Added class for upgrades to display in shop
 - Added tests for shop, even though it doesnt show in coverage (see readme)
 
-## Viikko 5
+## Viikko 6
 
 - Added core gameplay mechanics: Purchaesed upgrades displayed 
 - Added core gameplay mechanics: Upgrade description when clicked (Upgrade effects not yet implemented)
 - Upgrades can be sold
+
+## Viikko 7
+
+- Added core gameplay mechanics: Green upgrade logic added
+- Apply shop buffer to selling
+- Re-write coin increase logic
