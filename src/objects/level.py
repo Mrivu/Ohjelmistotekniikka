@@ -33,13 +33,14 @@ class Level:
                 mul = 2
             if amount == 5:
                 mul = 3
+            if amount == 6:
+                mul = 4
             score += math.ceil(mul*(num+1)*amount)
         if "Five fives" in [name.name for name in upgrades] and len(set(dice)) == 1 and set(dice).pop() == 5:
             score += 55
         return score
     
     def complete(self, dice, max_rerolls, rerolls, upgrades):
-        print(upgrades)
         # Check win
         score = self.current_score(dice, upgrades)
         win = score >= self.clear_score()

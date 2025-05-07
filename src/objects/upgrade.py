@@ -14,8 +14,9 @@ class Upgrade:
         self.image = kuva
         self.clicked = tsekkaa jos klikattu
     """
-    def __init__(self, rarity, name, img, scale):
+    def __init__(self, rarity, name, img, scale, multiplier=1):
         self.rarity = rarity
+        self.multiplier = multiplier
         self.name = name
         self.scale = scale
         self.width = img.get_width()

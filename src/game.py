@@ -220,10 +220,10 @@ class Game():
         }
         # Generoitu tekoälyllä - loppu
         for i in range(self.shop_items):
-            if random.randint(1,100) <= rarity_array[0]:
-                rarity = "Green"
-            elif random.randint(1,100) <= rarity_array[1]:
+            if random.randint(1,100) <= rarity_array[1]:
                 rarity = "Blue"
+            elif random.randint(1,100) <= rarity_array[0]:
+                rarity = "Green"
             else:
                 rarity = "Red"
             if len(available_upgrades[rarity]) > 0:
@@ -246,15 +246,15 @@ class Game():
                 self.display_timer[2] = upgrade.name
             if self.buttons[upgrade.name].draw(self.display,
                                                ((upgrade.width+10)*(i%3)+40,
-                                                50 if i < 3 else -10)) and self.coins >= 5:
+                                                50 if i < 3 else -10)) and self.coins >= lists.rarity_values[upgrade.rarity][0]:
                 if not self.shop_buffer and len(self.upgrades) < self.upgrade_amount:
-                    self.coins -= 5
+                    self.coins -= lists.rarity_values[upgrade.rarity][0]
                     self.upgrades.append(upgrade)
                     self.buttons[upgrade.name] = None
                     self.buttons[upgrade.name+"_sell"] = button.Button(self.sprites["buy"], (1,1))
                     upgrades.remove(upgrade)
                     self.shop_buffer = True
-            funcs.write_text("5",
+            funcs.write_text(str(lists.rarity_values[upgrade.rarity][0]),
                                    ((upgrade.width+10)*(i%3)+40,
                                         50 if i < 3 else -10), 20, self.display)
         if pygame.mouse.get_pressed()[0] == 0:
