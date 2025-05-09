@@ -61,6 +61,7 @@ class Game():
         self.coins = 0
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
+        self.rerolls_made = 0
         self.shop_items = 3
         self.shop_level = 1
         self.upgrade_amount = 2
@@ -73,12 +74,13 @@ class Game():
 
     def reset_gamevars(self):
         # Gamevars
-        self.coins = 0
+        self.coins = 30
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
-        self.shop_items = 3
+        self.rerolls_made = 0
+        self.shop_items = 6
         self.shop_level = 1
-        self.upgrade_amount = 2
+        self.upgrade_amount = 5
         self.shop_buffer = False
         self.display_timer = [0,5, None]
         self.upgrades = []
@@ -105,9 +107,9 @@ class Game():
         # Text
         funcs.write_text("LEVEL: " + str(self.level.level),
                    (0,global_vars.DISPLAY_HEIGHT/3), 55, self.display)
-        funcs.write_text("SCORE TO BEAT: " + str(self.level.clear_score()),
+        funcs.write_text("SCORE TO BEAT: " + str(self.level.clear_score(self.upgrades)),
                    (0,global_vars.DISPLAY_HEIGHT/4), 40, self.display)
-        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice, self.upgrades)),
+        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice, self.upgrades, self.rerolls_made)),
                    (0,global_vars.DISPLAY_HEIGHT/5), 32, self.display)
         funcs.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
@@ -125,7 +127,8 @@ class Game():
         if self.rerolls > 0:
             if self.buttons["reroll"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/4)):
                 self.rerolls -= 1
-                self.dice = self.level.reroll(self.dice)
+                self.dice, rerolls_made = self.level.reroll(self.dice, self.upgrades)
+                self.rerolls_made += rerolls_made
         else:
             self.buttons["reroll"].draw(self.display,
                                         (0, -global_vars.DISPLAY_HEIGHT/4), disabled=True)
@@ -133,20 +136,23 @@ class Game():
             self.level.un_select_dice(self.dice)
             self.state = "init_shop"
 
-    def continue_button(self, complete_status, upgrades):
+    def continue_button(self, complete_status, shop_upgrades):
         if self.buttons["continue"].draw(self.display, (0, -global_vars.DISPLAY_HEIGHT/8)):
             self.rerolls = self.max_rerolls
-            self.dice = self.level.reroll(self.dice)
+            if "Rerolls+" in [name.name for name in self.upgrades]:
+                self.rerolls += 1
+            self.dice, rerolls_made = self.level.reroll(self.dice, self.upgrades, start_roll=True)
+            self.rerolls_made = 0
             self.state = "game"
             if complete_status:
                 self.level = level.Level(self.level.level+1)
-                for upgrade in upgrades:
+                for upgrade in shop_upgrades:
                     self.buttons[upgrade.name] = None
-                    upgrades = []
+                    shop_upgrades = []
             else:
                 self.level = level.Level(1)
                 self.reset_gamevars()
-                upgrades = []
+                shop_upgrades = []
 
     def shop_background(self, complete_status, upgrades):
         if complete_status:
@@ -241,12 +247,12 @@ class Game():
 
     def shop_upgrades(self, upgrades):
         for i, upgrade in enumerate(upgrades):
-            if upgrade.draw(self.display, ((upgrade.width+10)*(i%3)+40, 90 if i < 3 else 30)):
+            if upgrade.draw(self.display, ((upgrade.width+10)*(i%3)+40, 90 if i < 3 else 0)):
                 self.display_timer[0] = self.display_timer[1]
                 self.display_timer[2] = upgrade.name
             if self.buttons[upgrade.name].draw(self.display,
                                                ((upgrade.width+10)*(i%3)+40,
-                                                50 if i < 3 else -10)) and self.coins >= lists.rarity_values[upgrade.rarity][0]:
+                                                50 if i < 3 else -40)) and self.coins >= lists.rarity_values[upgrade.rarity][0]:
                 if not self.shop_buffer and len(self.upgrades) < self.upgrade_amount:
                     self.coins -= lists.rarity_values[upgrade.rarity][0]
                     self.upgrades.append(upgrade)
@@ -256,7 +262,7 @@ class Game():
                     self.shop_buffer = True
             funcs.write_text(str(lists.rarity_values[upgrade.rarity][0]),
                                    ((upgrade.width+10)*(i%3)+40,
-                                        50 if i < 3 else -10), 20, self.display)
+                                        50 if i < 3 else -40), 20, self.display)
         if pygame.mouse.get_pressed()[0] == 0:
             self.shop_buffer = False
 
@@ -308,10 +314,10 @@ class Game():
         # Interface
         pygame.display.update()
         running = True
-        self.dice = self.level.reroll(self.dice)
+        self.dice, rerolls_made = self.level.reroll(self.dice, self.upgrades)
         complete_status = None
         coin_increase = 0
-        upgrades = []
+        shop_upgrades = []
         while running:
             if self.state == "game":
                 self.game_background()
@@ -324,11 +330,11 @@ class Game():
                     self.desc_countdown(self.display_timer[2])
             if self.state == "init_shop":
                 complete_status, coin_increase = self.level.complete(
-                    self.dice, self.max_rerolls, self.rerolls, self.upgrades)
-                upgrades = self.init_shop(coin_increase)
+                    self.dice, self.max_rerolls, self.rerolls, self.upgrades, self.rerolls_made)
+                shop_upgrades = self.init_shop(coin_increase)
             if self.state == "results":
-                self.shop_background(complete_status, upgrades)
-                self.continue_button(complete_status, upgrades)
+                self.shop_background(complete_status, shop_upgrades)
+                self.continue_button(complete_status, shop_upgrades)
 
                 # desc countdown
                 if self.display_timer[0] > 0:
