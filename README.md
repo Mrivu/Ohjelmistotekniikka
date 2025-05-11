@@ -3,6 +3,15 @@ Balatro-inspiroitu noppapeli.
 
 [Vaatimusmäärittely](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/vaatimusmaarittely.md)
 [Arkkitehtuuri](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/arkkitehtuuri.md)
+[Käyttöohje](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/kayttoohje.md)
+[Testaus](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/testaus.md)
+[Tuntikirjanpito](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/tuntikirjanpito.md)
+[Changelog](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/changelog.md)
+
+Releaset:
+Release 1 luotiin jo viikolla 5, mutta unohdin linkata sen.
+[Viikko 5 Release](https://github.com/Mrivu/Ohjelmistotekniikka/releases/tag/viikko5)
+[Final-release](https://github.com/Mrivu/Ohjelmistotekniikka/releases/tag/Final-release)
 
 ## Harjoitustyön toimivuus
 Testasin toimivuutta virtuaaliympäristössä.

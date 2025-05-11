@@ -24,6 +24,7 @@
 
 ## Viikko 7
 
-- Added core gameplay mechanics: Green upgrade logic added
+- Added core gameplay mechanics: Upgrade logic finished
 - Apply shop buffer to selling
 - Re-write coin increase logic
+- Apply finishing touches

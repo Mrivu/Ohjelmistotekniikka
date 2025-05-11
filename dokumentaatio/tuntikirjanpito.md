@@ -15,7 +15,8 @@
 | 29.4. | 1  | Docsring |
 | 6.5. | 2  | Upgrade logiikka |
 | 9.5. | 1  | Upgrade logiikka |
-| Yht | 25.5 |  |
+| 11.5. | 5  | Projektin viimeistely |
+| Yht | 30.5 |  |
 
 
 

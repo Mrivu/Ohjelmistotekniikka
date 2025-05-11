@@ -1,9 +1,35 @@
 # Vaatimusmäärittely
-Sovelluksen Tarkoitus:
-Sovellus on noppapohjainen peli, joka on inpiroitunut Balatrosta. Pelin genre olisi roguelite ja siinä edetään hyödyntäen erillaisia bonuksia ja strategioita.
+## Sovelluksen Tarkoitus:
+Sovellus on noppapohjainen peli, joka on inspiroitunut Balatrosta. Pelin genre olisi roguelite ja siinä edetään hyödyntäen erilaisia bonuksia ja strategioita.
 
-Toiminnallisuudet:
-- Pelissä on eri tasoja, jotka päättyvät jonkinsortin boss-battleen.
-- Pelissä on eri päivityksiä, jotka tukevat eri strategioita/pelityylejä edetä pelissä.
-- Pelissä on erillaisia noppia niin d4 -> d20.
-- Pelissä on kauppa, josta voi ostaa erillaisia päivityksiä peliin
+## Käyttöliittymän rakenne
+Käyttöliittymä koostuu kolmesta osasta: Peli, kauppa ja tulos.
+#### Peli
+- Aloitusnäkymä
+- Tason läpäiseminen
+- Noppien uudelleenheitto
+- Päivitysten hyödyntäminen
+
+#### Kauppa
+- Päivitysten ostaminen
+- Parannuksien ostaminen
+- Päivitysten myyminen
+
+#### Tulos
+- Ilmoittaa käyttäjälle, onko taso läpäisty
+- Resetoi pelin jos pelaaja häviää
+
+## Pelin toiminnallisuudet
+#### Peli
+- Pelaaja voi edetä tasoissa summaamalla noppansa ja vertaamalla tulosta kentän haluttua tulosta vastaan.
+- Pelaaja voi uudelleenheittää noppia jotta pääse tasoista läpi.
+- Pelaaja voi läpäistä tai hävitä tason
+#### Kauppa
+- Pelaaja voi ostaa parannuksia kaupasta, jotka vaikuttavat peliin yleisesti
+- Pelaaja voi ostaa päivityksiä, jotka antavat uniikkeja bonuksia
+- Pelaaja voi myydä päivityksiä, saaden osan rahasta takaisin
+
+## Jatkokehitysideat
+- Peliin voi lisätä paljon enemmän päivityksiä
+- Peliin voisi lisätä erilaisia noppatyyppejä, kuten kahdeksan, kymmenen tai kaksitoistakantasia noppia.
+- Peliin voisi lisätä boss-kenttiä, joilla on omia erikois sääntöjä. Vaikka että Kutoset on arvoltaan 0 ja ykköset arvoltaan 6.

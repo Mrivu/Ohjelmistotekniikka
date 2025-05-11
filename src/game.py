@@ -9,7 +9,7 @@ from objects import dice
 from static_items import lists
 from static_items import global_vars
 from static_items import funcs
-from static_items import asset_manager
+from static_items import upgrade_manager
 
 class Game():
     """Sisältää pelin käyttöliittymän
@@ -219,10 +219,10 @@ class Game():
         # Generoitu tekoälyllä - alku
         available_upgrades = {
             rarity: [
-                upg for upg in asset_manager.upgrades[rarity]
+                upg for upg in upgrade_manager.upgrades[rarity]
                 if upg not in self.upgrades
             ]
-            for rarity in asset_manager.upgrades
+            for rarity in upgrade_manager.upgrades
         }
         # Generoitu tekoälyllä - loppu
         for i in range(self.shop_items):
@@ -301,7 +301,7 @@ class Game():
         funcs.write_text(upgrade_name + ":",
                                (0, -global_vars.DISPLAY_HEIGHT/2.5 + 30),
                                25, self.display)
-        funcs.write_text(asset_manager.upgrade_descriptions[upgrade_name],
+        funcs.write_text(upgrade_manager.upgrade_descriptions[upgrade_name],
                                (0, -global_vars.DISPLAY_HEIGHT/2.5),
                                20, self.display)
 
