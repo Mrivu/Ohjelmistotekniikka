@@ -55,7 +55,7 @@ if amount == 5:
    mul = 3
 ```
 Luokan clear_score taas palauttaa tason numeron mukaisen vaikeustason seuraten matemaattista kaavaa, jonka kehitin itse arvioini pelinvaikeustason kasvun mukaan. Liitettynä on kuva vaikeustason käyrästä:
-![Käyrä](images/ClearScoreChart.png)
+![Käyrä](../images/ClearScoreChart.png)
 
 
 #### Upgrade
