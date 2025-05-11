@@ -2,6 +2,7 @@
 
 ## Käyttöliittymä
 Käyttöliittymä koostu kolmesta osasta: Kuva, Teksti ja Klikkaus.
+Käyttöliittymää käsittelee Game-luokka.
 Kuvat ladataan erikseen dictionaryyn kuvan nimellä. Esimerkkinä game.py:n funktio:
 ```
 def load_images(self):

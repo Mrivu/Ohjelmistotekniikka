@@ -17,8 +17,7 @@ class Level:
         difficulty = lists.level_difficulty[self.level]
         if "Raise the stakes" in [name.name for name in upgrades]:
             return math.ceil((((difficulty+3)**2) + difficulty*3))*1.5
-        else:
-            return math.ceil(((difficulty+3)**2) + difficulty*3)
+        return math.ceil(((difficulty+3)**2) + difficulty*3)
 
     def current_score(self, dice, upgrades, rerolls_made):
         score = 0
@@ -48,10 +47,11 @@ class Level:
                 score += math.ceil(mul*(num+1)*amount)*6
             else:
                 score += math.ceil(mul*(num+1)*amount)
-        if "Five fives" in [name.name for name in upgrades] and len(set(dice)) == 1 and set(dice).pop() == 5:
+        if "Five fives" in [name.name for name in upgrades
+                            ] and len(set(dice)) == 1 and set(dice).pop() == 5:
             score += 55
         return math.ceil(score)
-    
+
     def complete(self, dice, max_rerolls, rerolls, upgrades, rerolls_made):
         # Check win
         score = self.current_score(dice, upgrades, rerolls_made)
@@ -86,16 +86,20 @@ class Level:
         for die in dice:
             if die.selected or die.result is None:
                 selected_dice += 1
-                if die.result == 6 and "Calculated gamble" in [name.name for name in upgrades] and not start_roll:
-                    [name for name in upgrades if name.name == 'Calculated gamble'][0].multiplier *= 1.1
+                if die.result == 6 and "Calculated gamble" in [
+                    name.name for name in upgrades] and not start_roll:
+                    [name for name in upgrades if name.name == 'Calculated gamble'][
+                        0].multiplier *= 1.1
                 die.result = random.randint(1, die.sides)
                 no_select = False
             die.selected = False
         if no_select:
             selected_dice += len(dice)
             for die in dice:
-                if die.result == 6 and "Calculated gamble" in [name.name for name in upgrades] and not start_roll:
-                    [name for name in upgrades if name.name == 'Calculated gamble'][0].multiplier *= 1.1
+                if die.result == 6 and "Calculated gamble" in [
+                    name.name for name in upgrades] and not start_roll:
+                    [name for name in upgrades if name.name == 'Calculated gamble'][
+                        0].multiplier *= 1.1
                 die.result = random.randint(1, die.sides)
         return sorted(dice, key=lambda die: die.get_result(), reverse=True), selected_dice
 

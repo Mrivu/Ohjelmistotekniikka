@@ -74,13 +74,13 @@ class Game():
 
     def reset_gamevars(self):
         # Gamevars
-        self.coins = 30
+        self.coins = 0
         self.max_rerolls = 2
         self.rerolls = self.max_rerolls
         self.rerolls_made = 0
-        self.shop_items = 6
+        self.shop_items = 3
         self.shop_level = 1
-        self.upgrade_amount = 5
+        self.upgrade_amount = 2
         self.shop_buffer = False
         self.display_timer = [0,5, None]
         self.upgrades = []
@@ -109,7 +109,8 @@ class Game():
                    (0,global_vars.DISPLAY_HEIGHT/3), 55, self.display)
         funcs.write_text("SCORE TO BEAT: " + str(self.level.clear_score(self.upgrades)),
                    (0,global_vars.DISPLAY_HEIGHT/4), 40, self.display)
-        funcs.write_text("CURRENT: " + str(self.level.current_score(self.dice, self.upgrades, self.rerolls_made)),
+        funcs.write_text("CURRENT: " + str(self.level.current_score(
+            self.dice,self.upgrades, self.rerolls_made)),
                    (0,global_vars.DISPLAY_HEIGHT/5), 32, self.display)
         funcs.write_text("COINS: " + str(self.coins),
                    (-global_vars.DISPLAY_WIDTH/2 + 80,
@@ -252,7 +253,9 @@ class Game():
                 self.display_timer[2] = upgrade.name
             if self.buttons[upgrade.name].draw(self.display,
                                                ((upgrade.width+10)*(i%3)+40,
-                                                50 if i < 3 else -40)) and self.coins >= lists.rarity_values[upgrade.rarity][0]:
+                                                50 if i < 3 else -40)
+                                                ) and self.coins >= lists.rarity_values[
+                                                    upgrade.rarity][0]:
                 if not self.shop_buffer and len(self.upgrades) < self.upgrade_amount:
                     self.coins -= lists.rarity_values[upgrade.rarity][0]
                     self.upgrades.append(upgrade)
@@ -280,7 +283,8 @@ class Game():
                                (-global_vars.DISPLAY_WIDTH/3, 250 - i*50),
                                25, self.display)
                 if self.buttons[upgrade.name+"_sell"].draw(self.display,
-                                                           (-global_vars.DISPLAY_WIDTH/3.5, 250 - i*50)) and not self.shop_buffer:
+                                                           (-global_vars.DISPLAY_WIDTH/3.5,
+                                                            250 - i*50)) and not self.shop_buffer:
                     self.buttons[upgrade.name+"_sell"] = None
                     self.coins += lists.rarity_values[upgrade.rarity][1]
                     self.upgrades.remove(upgrade)

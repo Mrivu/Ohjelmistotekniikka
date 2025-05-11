@@ -15,5 +15,6 @@ def draw_image(image, size, pos, display):
     width = img.get_width()
     height = img.get_height()
     img = pygame.transform.scale(img, (int(width * size[0]), int(height * size[1])))
-    rect = img.get_rect(center=(global_vars.DISPLAY_WIDTH/2 + pos[0], global_vars.DISPLAY_HEIGHT/2 - pos[1]))
+    rect = img.get_rect(center=(global_vars.DISPLAY_WIDTH/2 + pos[0],
+                                global_vars.DISPLAY_HEIGHT/2 - pos[1]))
     display.blit(img, rect)

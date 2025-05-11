@@ -3,6 +3,7 @@ from src.objects import upgrade
 # from src.static_items import global_vars
 
 green_sprites = {
+    "Green random": pygame.image.load("src/assets/upgrades/DiceGameUpgradesGreenRandom.png"),
     "Fear of fours": pygame.image.load("src/assets/upgrades/DiceGameUpgradesGreenFearOfFours.png"),
     "Five fives": pygame.image.load("src/assets/upgrades/DiceGameUpgradesGreenFiveFives.png"),
     "Curtain call": pygame.image.load("src/assets/upgrades/DiceGameUpgradesGreenCurtainCall.png"),
@@ -11,7 +12,8 @@ green_sprites = {
     "Rerolls+": pygame.image.load("src/assets/upgrades/DiceGameUpgradesBlueRerolls+.png"),
     "Snake eyes": pygame.image.load("src/assets/upgrades/DiceGameUpgradesRedSnakeEyes.png"),
     "Six shooter": pygame.image.load("src/assets/upgrades/DiceGameUpgradesRedSixShooter.png"),
-    "Raise the stakes": pygame.image.load("src/assets/upgrades/DiceGameUpgradesRedRaiseTheStakes.png"),
+    "Raise the stakes": pygame.image.load(
+        "src/assets/upgrades/DiceGameUpgradesRedRaiseTheStakes.png"),
 }
 
 upgrades = {
@@ -41,5 +43,6 @@ upgrade_descriptions = {
     "Rerolls+": "+1 Rerolls.",
     "Snake eyes": "When you submit your hand, all 1’s give an additional +5 points.",
     "Six shooter": "When you have 5 of a kind, automatically add the 6th one.",
-    "Raise the stakes": "Point requirement is increased 1.5x. Your coins at the end of the. levels are increased 2x."
+    "Raise the stakes": """Point requirement is increased 1.5x.
+    Your coins at the end of the. levels are increased 2x."""
 }
