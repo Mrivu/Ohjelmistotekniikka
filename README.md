@@ -9,7 +9,7 @@ Balatro-inspiroitu noppapeli.
 [Changelog](https://github.com/Mrivu/Ohjelmistotekniikka/tree/main/dokumentaatio/changelog.md)
 
 Releaset:
-Release 1 luotiin jo viikolla 5, mutta unohdin linkata sen.
+Release luotiin jo tehtävän mukaan viikolla 5, mutta unohdin linkata sen.
 [Viikko 5 Release](https://github.com/Mrivu/Ohjelmistotekniikka/releases/tag/viikko5)
 [Final-release](https://github.com/Mrivu/Ohjelmistotekniikka/releases/tag/Final-release)
 
@@ -17,9 +17,6 @@ Release 1 luotiin jo viikolla 5, mutta unohdin linkata sen.
 Testasin toimivuutta virtuaaliympäristössä.
 
 ![Testi](images/Virtuaaliymparistotesti.png)
-
-## Testeihin liittyvää
-40% Coverage on teoriassa saavutettu, sillä testaan koodia, joka ei palauta mitään. Peliprojektissa on paljon koodia, kuten kuvien tai tekstin piirtämistä, jotai ei voi testata samalla tavalla, kuin funktioita jotka palauttavat jotain.
 
 # Peliohjeet
 - Noppien summa kuuluu olla yhtäsuuri tai suurempi kuin annettu luku, jotta taso läpäistään. Jos samaa numeroa on monta, siitä saa bonuksia. 
